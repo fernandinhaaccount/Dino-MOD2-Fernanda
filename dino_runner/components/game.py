@@ -104,6 +104,6 @@ class Game:
             else:
                 self.player.has_power_up = False # se acabar o jogadoor perde o escudo, voltando a ficar vuneravel
                 self.player.type = DEFAULT_TYPE
-    # def handle_events_on_menu(self):
+     def handle_events_on_menu(self):
 
-    # def show_menu(self):
+     def show_menu(self):

@@ -104,6 +104,37 @@ class Game:
             else:
                 self.player.has_power_up = False # se acabar o jogadoor perde o escudo, voltando a ficar vuneravel
                 self.player.type = DEFAULT_TYPE
-     def handle_events_on_menu(self):
+    def handle_events_on_menu(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUITE:
+                self.playing = False
+                self.running = False
+            elif event.type == pygame.KEYDOWN:
+                self.run()
 
-     def show_menu(self):
+    def show_menu(self):
+        self.scree.fill((255, 255, 255))
+        half_screen_height = SCREEN_HEIGHT // 2 
+        half_screen_width = SCREEN_WIDTH // 2
+        if self.death_count == 0:
+            draw_message_component("pressione qualquer tecla para iniciar", self.screen)
+        else:
+            draw_message_component("pressione qualquer tecla para reiniciar", self.screen, pos_y_center = half_screen_height + 140)
+            draw_message_component(
+                f"sua pontuação: {self.score}",
+                self.creen,
+                pos_y_center = half_screen_height - 150
+            )
+            
+            draw_message_component(
+                f"contagem de vidas: {self.death_count}",
+                self.screen,
+                pos_y_center = half_screen_height - 100
+            )
+            self.screen.blit(ICON, half_screen_width - 40, half_screen_height - 30)
+            
+        pygame.display.flip()
+        self.handle_events_on_menu()
+
+
+

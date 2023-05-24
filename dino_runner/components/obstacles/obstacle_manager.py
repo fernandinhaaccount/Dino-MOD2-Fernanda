@@ -23,7 +23,7 @@ class ObstacleManager:
             Bird()
         ]
         if len(self.obstacles) == 0:
-            self.obstacles.append(obstacle_type[random.randit(0,1)])
+            self.obstacles.append(obstacle_type[random.randint(0,1)])
         for obstacle in self.obstacles:
             obstacle.update(game.game_speed, self.obstacles)
             if game.player.dino_rect.colliderect(obstacle.rect):

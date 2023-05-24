@@ -7,63 +7,63 @@ from dino_runner.utils.text_utils import draw_message_component
 from dino_runner.components.powerups.power_up_manager import PowerUpManager
 
 class Game:
-    def __init__(self): #construtor/ base do jogo
+    def __init__(self): 
         pygame.init()
         pygame.display.set_caption(TITLE)
         pygame.display.set_icon(ICON)
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.playing = False
-        self.running = False #jogador sempre está correndo
+        self.running = False 
         self.score = 0
         self.death_count = 0
         self.game_speed = 20
-        self.x_pos_bg = 0 #plano de fundo
+        self.x_pos_bg = 0 
         self.y_pos_bg = 380
         self.player = Dinosaur()
         self.obstacle_manager = ObstacleManager()
         self.power_up_manager = PowerUpManager()
     
     def execute(self):
-        self.running = True #quando meu jogo excutar ele vai correr
+        self.running = True 
         while self.running:
-            if not self.playing: #inverte o bool e ele fica falso. mostrando que ele morreu
+            if not self.playing: 
                 self.show_menu()
         pygame.display.quit()
         pygame.quit()
     
-    def run(self): #função correr
-        self.playing = True #jogador correndo/ativo
-        self.obstacle_manager.reset_obstacles() #os obstaculos
-        self.power_up_manager.reset_power_ups() #quando o jogo começa do zero(pontuação zero, reseta os obstaculos e a velocidade 0)
+    def run(self): 
+        self.playing = True 
+        self.obstacle_manager.reset_obstacles()
+        self.power_up_manager.reset_power_ups() 
         self.game_speed = 20
         self.score = 0
-        while self.playing: #game loop
+        while self.playing: 
             self.events()
             self.update()
-            self.draw() #base do jogo
+            self.draw()
             
     def events(self):
-        for event in pygame.event.get(): #realidade 2d
-            if event.type == pygame.QUIT: #se o jogador para de jogar e correr/ false/
+        for event in pygame.event.get(): 
+            if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False 
     
     def update(self):
-        user_input = pygame.key.get_pressed() #qualquer tecla inicia o jogo
+        user_input = pygame.key.get_pressed() 
         self.player.update(user_input)
         self.obstacle_manager.update(self)
         self.update_score()
-        self.power_up_manager.update(self.score, self.game_speed, self.player) #atulizações da pontuação, da velocidade, vida
+        self.power_up_manager.update(self.score, self.game_speed, self.player)
     
     def update_score(self):
         self.score += 1
-        if self.score % 100 == 0: #a cada 100 pontos aumenta mais 5 de velocidade
+        if self.score % 100 == 0: 
             self.game_speed += 5
     
-    def draw(self): #base dos desenhos
+    def draw(self):
         self.clock.tick(FPS) 
-        self.screen.fill((255, 255, 255)) #cor branca do jogo, tudo desenhado em branco
+        self.screen.fill((255, 255, 255)) 
         self.draw_background()
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
@@ -74,8 +74,8 @@ class Game:
         pygame.display.flip()
     
     def  draw_background(self):
-        image_width = BG.get_width() #desenhando o background da tela
-        self.screen.blit(BG(self.x_pos_bg, self.y_pos_bg)) 
+        image_width = BG.get_width() 
+        self.screen.blit(BG, (self.x_pos_bg, self.y_pos_bg)) 
         self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
         if self.x_pos_bg <= -image_width:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
@@ -84,36 +84,36 @@ class Game:
     
     def draw_score(self):
         draw_message_component(
-            f"pontuação: {self.score}", #aparecer a pontuação atualizada na tela
+            f"pontuação: {self.score}", 
             self.screen,
-            pos_x_center= 1000, #lugar onde vai aparecer na tela a pontuação
+            pos_x_center= 1000, 
             pos_y_center= 50
         )
     
-    def draw_power_up_time(self): #tempo para o escudo aparacer e o poder
+    def draw_power_up_time(self): 
         if self.player.has_power_up:
-            time_to_show = round((self.player.power_up_time - pygame.time.get_tick())/ 1000, 2) #numero limitado por milesimo de segundos/se meu dinossauro tem 
+            time_to_show = round((self.player.power_up_time - pygame.time.get_tick())/ 1000, 2) 
             if time_to_show >= 0:
                 draw_message_component(
                     f"{self.player.type.capitalize()} Disponivel por: {time_to_show} segundos", 
                     self.screen,
-                    font_size= 18, #fonte da letra
+                    font_size= 18, 
                     pos_x_center= 500,
                     pos_y_center=40
                 )
             else:
-                self.player.has_power_up = False # se acabar o jogadoor perde o escudo, voltando a ficar vuneravel
+                self.player.has_power_up = False 
                 self.player.type = DEFAULT_TYPE
     def handle_events_on_menu(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUITE:
+            if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
             elif event.type == pygame.KEYDOWN:
                 self.run()
 
     def show_menu(self):
-        self.scree.fill((255, 255, 255))
+        self.screen.fill((255, 255, 255))
         half_screen_height = SCREEN_HEIGHT // 2 
         half_screen_width = SCREEN_WIDTH // 2
         if self.death_count == 0:
